@@ -1,2 +1,11 @@
 build/
 .cache/
+
+cmake-build-*/
+
+.idea/
+
+*.exe
+*.obj
+*.o
+*.out
