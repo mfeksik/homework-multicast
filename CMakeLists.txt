@@ -25,3 +25,20 @@ target_sources(multicast PRIVATE
   serial_client.hpp
   serial_client.cpp
 )
+
+add_executable(multicast_test
+        tests/test_multicast.cpp
+        client.hpp
+        udp.hpp
+        udp.cpp
+        udp_client.hpp
+        udp_client.cpp
+        serial.hpp
+        serial.cpp
+        serial_client.hpp
+        serial_client.cpp
+)
+target_include_directories(multicast_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+enable_testing()
+add_test(NAME multicast_test COMMAND multicast_test)
