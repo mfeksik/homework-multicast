@@ -15,8 +15,13 @@ target_sources(multicast PRIVATE
   main.cpp
   config.cpp
   config.hpp
+  client.hpp
   udp.hpp
   udp.cpp
-  serial.cpp
+  udp_client.hpp
+  udp_client.cpp
   serial.hpp
+  serial.cpp
+  serial_client.hpp
+  serial_client.cpp
 )

@@ -1,8 +1,14 @@
 #include <cstdlib>
 #include <iostream>
+#include <memory>
+#include <string>
+#include <string_view>
+#include <vector>
 
 #include "config.hpp"
+#include "serial_client.hpp"
 #include "udp.hpp"
+#include "udp_client.hpp"
 
 namespace
 {
@@ -40,23 +46,27 @@ int main(int argc, char* argv[])
         Config config{argv[1]};
         udp::Socket socket{};
 
-        for ([[maybe_unused]] const auto& entry : config.GetUdpEntries())
+        std::vector<std::unique_ptr<Client>> clients;
+        clients.reserve(
+            config.GetUdpEntries().size() + config.GetSerialEntries().size());
+
+        for (const auto& entry : config.GetUdpEntries())
         {
-            // TODO: добавьте клиента (используйте объект socket)
+            clients.emplace_back(
+                std::make_unique<UdpClient>(socket, entry.address));
         }
 
-        for ([[maybe_unused]] const auto& entry : config.GetSerialEntries())
-        {
-            // TODO: добавьте клиента (для каждого клиента создавайте
-            // новые объекты serial::Device)
-        }
+        for (const auto& entry : config.GetSerialEntries())
+            clients.emplace_back(std::make_unique<SerialClient>(entry.device));
+
 
         std::string input{};
         while (print_prompt(), std::getline(std::cin, input))
         {
             input.push_back('\n');
 
-            // TODO: отправьте всем клиентам
+            for (auto& client : clients)
+                client->send(input);
         }
         return EXIT_SUCCESS;
     }
